@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "sRShYWPBIq4=",
+  "dgSpecHash": "9nopey9UWgI=",
   "success": true,
-  "projectFilePath": "/home/hudson/Área de trabalho/PacMan/PacMan.Tests/PacMan.Tests.csproj",
+  "projectFilePath": "/home/hudson/Downloads/PacManJala/PacMan.Tests/PacMan.Tests.csproj",
   "expectedPackageFiles": [
     "/home/hudson/.nuget/packages/coverlet.collector/6.0.4/coverlet.collector.6.0.4.nupkg.sha512",
     "/home/hudson/.nuget/packages/microsoft.codecoverage/17.14.1/microsoft.codecoverage.17.14.1.nupkg.sha512",

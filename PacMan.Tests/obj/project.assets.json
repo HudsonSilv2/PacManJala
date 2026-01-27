@@ -935,11 +935,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/hudson/Área de trabalho/PacMan/PacMan.Tests/PacMan.Tests.csproj",
+      "projectUniqueName": "/home/hudson/Downloads/PacManJala/PacMan.Tests/PacMan.Tests.csproj",
       "projectName": "PacMan.Tests",
-      "projectPath": "/home/hudson/Área de trabalho/PacMan/PacMan.Tests/PacMan.Tests.csproj",
+      "projectPath": "/home/hudson/Downloads/PacManJala/PacMan.Tests/PacMan.Tests.csproj",
       "packagesPath": "/home/hudson/.nuget/packages/",
-      "outputPath": "/home/hudson/Área de trabalho/PacMan/PacMan.Tests/obj/",
+      "outputPath": "/home/hudson/Downloads/PacManJala/PacMan.Tests/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/hudson/.nuget/NuGet/NuGet.Config"
@@ -955,8 +955,8 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "/home/hudson/Área de trabalho/PacMan/PacMan.Core/PacMan.Core.csproj": {
-              "projectPath": "/home/hudson/Área de trabalho/PacMan/PacMan.Core/PacMan.Core.csproj"
+            "/home/hudson/Downloads/PacManJala/PacMan.Core/PacMan.Core.csproj": {
+              "projectPath": "/home/hudson/Downloads/PacManJala/PacMan.Core/PacMan.Core.csproj"
             }
           }
         }
