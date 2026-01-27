@@ -1,0 +1,20 @@
+# PacMan
+
+Recriação do jogo Pac-Man utilizando C#, Uno Platform e o padrão MVVM.
+
+## Tecnologias
+- C#
+- Uno Platform
+- XAML
+- MVVM
+- xUnit
+
+## Objetivo
+Projeto final da disciplina de Programação III, com foco em:
+- Arquitetura limpa
+- Separação de responsabilidades
+- Testes unitários
+- Documentação técnica
+
+## Status
+🚧 Em desenvolvimento
