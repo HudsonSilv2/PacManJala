@@ -1,0 +1,23 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PacMan.App.ViewModels"
+             x:Class="PacMan.App.Views.GamePage"
+             x:DataType="vm:GameViewModel"
+             Background="Black">
+    
+    <UserControl.DataContext>
+        <vm:GameViewModel />
+    </UserControl.DataContext>
+
+    <Border Padding="20">
+        <StackPanel Spacing="15" Background="Black">
+            <TextBlock Text="PAC-MAN" FontSize="28" Foreground="Yellow" FontWeight="Bold" />
+            <TextBlock Text="{Binding MapWidth, StringFormat='Mapa: {0}x'}" Foreground="White" />
+            
+            <!-- Canvas para desenhar o jogo -->
+            <Canvas Background="#1a1a1a" Width="600" Height="440" Margin="0,20,0,0" />
+            
+            <TextBlock Text="Pressione ESC para sair" Foreground="Gray" FontSize="12" />
+        </StackPanel>
+    </Border>
+</UserControl>

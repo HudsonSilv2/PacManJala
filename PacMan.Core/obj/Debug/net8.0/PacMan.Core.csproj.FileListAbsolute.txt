@@ -1,0 +1,12 @@
+/home/hudson/Downloads/PacManJala/PacMan.Core/bin/Debug/net8.0/PacMan.Core.deps.json
+/home/hudson/Downloads/PacManJala/PacMan.Core/bin/Debug/net8.0/PacMan.Core.dll
+/home/hudson/Downloads/PacManJala/PacMan.Core/bin/Debug/net8.0/PacMan.Core.pdb
+/home/hudson/Downloads/PacManJala/PacMan.Core/obj/Debug/net8.0/PacMan.Core.GeneratedMSBuildEditorConfig.editorconfig
+/home/hudson/Downloads/PacManJala/PacMan.Core/obj/Debug/net8.0/PacMan.Core.AssemblyInfoInputs.cache
+/home/hudson/Downloads/PacManJala/PacMan.Core/obj/Debug/net8.0/PacMan.Core.AssemblyInfo.cs
+/home/hudson/Downloads/PacManJala/PacMan.Core/obj/Debug/net8.0/PacMan.Core.csproj.CoreCompileInputs.cache
+/home/hudson/Downloads/PacManJala/PacMan.Core/obj/Debug/net8.0/PacMan.Core.sourcelink.json
+/home/hudson/Downloads/PacManJala/PacMan.Core/obj/Debug/net8.0/PacMan.Core.dll
+/home/hudson/Downloads/PacManJala/PacMan.Core/obj/Debug/net8.0/refint/PacMan.Core.dll
+/home/hudson/Downloads/PacManJala/PacMan.Core/obj/Debug/net8.0/PacMan.Core.pdb
+/home/hudson/Downloads/PacManJala/PacMan.Core/obj/Debug/net8.0/ref/PacMan.Core.dll

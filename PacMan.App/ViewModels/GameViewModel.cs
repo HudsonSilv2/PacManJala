@@ -1,0 +1,32 @@
+using System.Collections.ObjectModel;
+using PacMan.Core;
+using PacMan.Core.Models;
+
+namespace PacMan.App.ViewModels;
+
+/// <summary>
+/// ViewModel principal do jogo.
+/// Faz a ponte entre o Core e a interface.
+/// </summary>
+public class GameViewModel
+{
+    private readonly GameEngine _engine;
+
+    public int MapWidth => _engine.Map.Width;
+    public int MapHeight => _engine.Map.Height;
+
+    // Expondo o mapa para a UI
+    public TileType[,] Tiles => _engine.Map.Tiles;
+
+    public Player Player => _engine.Player;
+
+    public ObservableCollection<Ghost> Ghosts { get; }
+
+    public GameViewModel()
+    {
+        // Mapa pequeno só pra visualização inicial
+        _engine = new GameEngine(15, 11);
+
+        Ghosts = new ObservableCollection<Ghost>(_engine.Ghosts);
+    }
+}
