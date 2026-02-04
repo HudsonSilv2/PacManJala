@@ -4,21 +4,28 @@
     <RestoreSuccess Condition=" '$(RestoreSuccess)' == '' ">True</RestoreSuccess>
     <RestoreTool Condition=" '$(RestoreTool)' == '' ">NuGet</RestoreTool>
     <ProjectAssetsFile Condition=" '$(ProjectAssetsFile)' == '' ">$(MSBuildThisFileDirectory)project.assets.json</ProjectAssetsFile>
-    <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">/home/hudson/.nuget/packages/</NuGetPackageRoot>
-    <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">/home/hudson/.nuget/packages/</NuGetPackageFolders>
+    <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">$(UserProfile)\.nuget\packages\</NuGetPackageRoot>
+    <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">C:\Users\Mateus\.nuget\packages\</NuGetPackageFolders>
     <NuGetProjectStyle Condition=" '$(NuGetProjectStyle)' == '' ">PackageReference</NuGetProjectStyle>
     <NuGetToolVersion Condition=" '$(NuGetToolVersion)' == '' ">7.0.0</NuGetToolVersion>
   </PropertyGroup>
   <ItemGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <SourceRoot Include="/home/hudson/.nuget/packages/" />
+    <SourceRoot Include="C:\Users\Mateus\.nuget\packages\" />
   </ItemGroup>
-  <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <Import Project="$(NuGetPackageRoot)skiasharp.nativeassets.webassembly/2.88.9/buildTransitive/netstandard1.0/SkiaSharp.NativeAssets.WebAssembly.props" Condition="Exists('$(NuGetPackageRoot)skiasharp.nativeassets.webassembly/2.88.9/buildTransitive/netstandard1.0/SkiaSharp.NativeAssets.WebAssembly.props')" />
-    <Import Project="$(NuGetPackageRoot)harfbuzzsharp.nativeassets.webassembly/8.3.1.1/buildTransitive/netstandard1.0/HarfBuzzSharp.NativeAssets.WebAssembly.props" Condition="Exists('$(NuGetPackageRoot)harfbuzzsharp.nativeassets.webassembly/8.3.1.1/buildTransitive/netstandard1.0/HarfBuzzSharp.NativeAssets.WebAssembly.props')" />
-    <Import Project="$(NuGetPackageRoot)avalonia/11.3.11/buildTransitive/Avalonia.props" Condition="Exists('$(NuGetPackageRoot)avalonia/11.3.11/buildTransitive/Avalonia.props')" />
+  <ImportGroup Condition=" '$(TargetFramework)' == 'net8.0-desktop' AND '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)uno.fonts.fluent\2.3.0\buildTransitive\Uno.Fonts.Fluent.props" Condition="Exists('$(NuGetPackageRoot)uno.fonts.fluent\2.3.0\buildTransitive\Uno.Fonts.Fluent.props')" />
+    <Import Project="$(NuGetPackageRoot)uno.winui\5.2.161\buildTransitive\net7.0\uno.winui.props" Condition="Exists('$(NuGetPackageRoot)uno.winui\5.2.161\buildTransitive\net7.0\uno.winui.props')" />
+    <Import Project="$(NuGetPackageRoot)uno.winui.skia.x11\5.2.161\build\Uno.WinUI.Skia.X11.props" Condition="Exists('$(NuGetPackageRoot)uno.winui.skia.x11\5.2.161\build\Uno.WinUI.Skia.X11.props')" />
+    <Import Project="$(NuGetPackageRoot)uno.winui.skia.wpf\5.2.161\build\Uno.WinUI.Skia.Wpf.props" Condition="Exists('$(NuGetPackageRoot)uno.winui.skia.wpf\5.2.161\build\Uno.WinUI.Skia.Wpf.props')" />
+    <Import Project="$(NuGetPackageRoot)uno.winui.skia.macos\5.2.161\build\Uno.WinUI.Skia.MacOS.props" Condition="Exists('$(NuGetPackageRoot)uno.winui.skia.macos\5.2.161\build\Uno.WinUI.Skia.MacOS.props')" />
+    <Import Project="$(NuGetPackageRoot)uno.winui.skia.linux.framebuffer\5.2.161\build\Uno.WinUI.Skia.Linux.FrameBuffer.props" Condition="Exists('$(NuGetPackageRoot)uno.winui.skia.linux.framebuffer\5.2.161\build\Uno.WinUI.Skia.Linux.FrameBuffer.props')" />
+    <Import Project="$(NuGetPackageRoot)uno.winui.skia.gtk\5.2.161\build\Uno.WinUI.Skia.Gtk.props" Condition="Exists('$(NuGetPackageRoot)uno.winui.skia.gtk\5.2.161\build\Uno.WinUI.Skia.Gtk.props')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.extensions.configuration.usersecrets\8.0.0\buildTransitive\net6.0\Microsoft.Extensions.Configuration.UserSecrets.props" Condition="Exists('$(NuGetPackageRoot)microsoft.extensions.configuration.usersecrets\8.0.0\buildTransitive\net6.0\Microsoft.Extensions.Configuration.UserSecrets.props')" />
+    <Import Project="$(NuGetPackageRoot)uno.extensions.core\4.1.28\buildTransitive\Uno.Extensions.Core.props" Condition="Exists('$(NuGetPackageRoot)uno.extensions.core\4.1.28\buildTransitive\Uno.Extensions.Core.props')" />
+    <Import Project="$(NuGetPackageRoot)uno.extensions.hosting.winui\4.1.28\buildTransitive\Uno.Extensions.Hosting.WinUI.props" Condition="Exists('$(NuGetPackageRoot)uno.extensions.hosting.winui\4.1.28\buildTransitive\Uno.Extensions.Hosting.WinUI.props')" />
   </ImportGroup>
-  <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <PkgAvalonia_BuildServices Condition=" '$(PkgAvalonia_BuildServices)' == '' ">/home/hudson/.nuget/packages/avalonia.buildservices/11.3.2</PkgAvalonia_BuildServices>
-    <PkgAvalonia Condition=" '$(PkgAvalonia)' == '' ">/home/hudson/.nuget/packages/avalonia/11.3.11</PkgAvalonia>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net8.0-desktop' AND '$(ExcludeRestorePackageImports)' != 'true' ">
+    <PkgUno_WinUI Condition=" '$(PkgUno_WinUI)' == '' ">C:\Users\Mateus\.nuget\packages\uno.winui\5.2.161</PkgUno_WinUI>
+    <PkgUno_WinUI_DevServer Condition=" '$(PkgUno_WinUI_DevServer)' == '' ">C:\Users\Mateus\.nuget\packages\uno.winui.devserver\5.2.161</PkgUno_WinUI_DevServer>
   </PropertyGroup>
 </Project>

@@ -1,0 +1,10 @@
+{
+  "background_color": "#ffffff",
+  "description": "PacMan.App",
+  "display": "standalone",
+  "name": "PacMan.App",
+  "short_name": "PacMan.App",
+  "start_url": "/index.html",
+  "theme_color": "#ffffff",
+  "scope": "/"
+}

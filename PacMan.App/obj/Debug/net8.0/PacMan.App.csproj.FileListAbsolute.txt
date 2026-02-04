@@ -1,8 +1,0 @@
-/home/hudson/Downloads/PacManJala/PacMan.App/obj/Debug/net8.0/PacMan.App.csproj.AssemblyReference.cache
-/home/hudson/Downloads/PacManJala/PacMan.App/obj/Debug/net8.0/Avalonia/Resources.Inputs.cache
-/home/hudson/Downloads/PacManJala/PacMan.App/obj/Debug/net8.0/Avalonia/resources
-/home/hudson/Downloads/PacManJala/PacMan.App/obj/Debug/net8.0/PacMan.App.GeneratedMSBuildEditorConfig.editorconfig
-/home/hudson/Downloads/PacManJala/PacMan.App/obj/Debug/net8.0/PacMan.App.AssemblyInfoInputs.cache
-/home/hudson/Downloads/PacManJala/PacMan.App/obj/Debug/net8.0/PacMan.App.AssemblyInfo.cs
-/home/hudson/Downloads/PacManJala/PacMan.App/obj/Debug/net8.0/PacMan.App.csproj.CoreCompileInputs.cache
-/home/hudson/Downloads/PacManJala/PacMan.App/obj/Debug/net8.0/PacMan.App.sourcelink.json

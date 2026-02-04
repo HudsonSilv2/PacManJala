@@ -1,8 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "ohKBNsCYUgM=",
+  "dgSpecHash": "8ZmX+g7Gon4=",
   "success": true,
-  "projectFilePath": "/home/hudson/Downloads/PacManJala/PacMan.Core/PacMan.Core.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "C:\\Projetos\\PacManJala\\PacMan.Core\\PacMan.Core.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Mateus\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.22\\microsoft.netcore.app.ref.8.0.22.nupkg.sha512",
+    "C:\\Users\\Mateus\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.22\\microsoft.windowsdesktop.app.ref.8.0.22.nupkg.sha512",
+    "C:\\Users\\Mateus\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.22\\microsoft.aspnetcore.app.ref.8.0.22.nupkg.sha512"
+  ],
   "logs": []
 }

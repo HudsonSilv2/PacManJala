@@ -1,26 +1,26 @@
 {
   "format": 1,
   "restore": {
-    "/home/hudson/Downloads/PacManJala/PacMan.Tests/PacMan.Tests.csproj": {}
+    "C:\\Projetos\\PacManJala\\PacMan.Tests\\PacMan.Tests.csproj": {}
   },
   "projects": {
-    "/home/hudson/Downloads/PacManJala/PacMan.Core/PacMan.Core.csproj": {
+    "C:\\Projetos\\PacManJala\\PacMan.Core\\PacMan.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/hudson/Downloads/PacManJala/PacMan.Core/PacMan.Core.csproj",
+        "projectUniqueName": "C:\\Projetos\\PacManJala\\PacMan.Core\\PacMan.Core.csproj",
         "projectName": "PacMan.Core",
-        "projectPath": "/home/hudson/Downloads/PacManJala/PacMan.Core/PacMan.Core.csproj",
-        "packagesPath": "/home/hudson/.nuget/packages/",
-        "outputPath": "/home/hudson/Downloads/PacManJala/PacMan.Core/obj/",
+        "projectPath": "C:\\Projetos\\PacManJala\\PacMan.Core\\PacMan.Core.csproj",
+        "packagesPath": "C:\\Users\\Mateus\\.nuget\\packages\\",
+        "outputPath": "C:\\Projetos\\PacManJala\\PacMan.Core\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/hudson/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Mateus\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "/usr/lib/dotnet/library-packs": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -55,40 +55,54 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/10.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.101/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/hudson/Downloads/PacManJala/PacMan.Tests/PacMan.Tests.csproj": {
+    "C:\\Projetos\\PacManJala\\PacMan.Tests\\PacMan.Tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/hudson/Downloads/PacManJala/PacMan.Tests/PacMan.Tests.csproj",
+        "projectUniqueName": "C:\\Projetos\\PacManJala\\PacMan.Tests\\PacMan.Tests.csproj",
         "projectName": "PacMan.Tests",
-        "projectPath": "/home/hudson/Downloads/PacManJala/PacMan.Tests/PacMan.Tests.csproj",
-        "packagesPath": "/home/hudson/.nuget/packages/",
-        "outputPath": "/home/hudson/Downloads/PacManJala/PacMan.Tests/obj/",
+        "projectPath": "C:\\Projetos\\PacManJala\\PacMan.Tests\\PacMan.Tests.csproj",
+        "packagesPath": "C:\\Users\\Mateus\\.nuget\\packages\\",
+        "outputPath": "C:\\Projetos\\PacManJala\\PacMan.Tests\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/hudson/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Mateus\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "/usr/lib/dotnet/library-packs": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/home/hudson/Downloads/PacManJala/PacMan.Core/PacMan.Core.csproj": {
-                "projectPath": "/home/hudson/Downloads/PacManJala/PacMan.Core/PacMan.Core.csproj"
+              "C:\\Projetos\\PacManJala\\PacMan.Core\\PacMan.Core.csproj": {
+                "projectPath": "C:\\Projetos\\PacManJala\\PacMan.Core\\PacMan.Core.csproj"
               }
             }
           }
@@ -137,12 +151,26 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[8.0.22, 8.0.22]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/10.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.101/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

@@ -1,29 +1,26 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Uno.Sdk/5.2.161">
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-    <OutputType>WinExe</OutputType>
+    <TargetFrameworks>net8.0-desktop</TargetFrameworks>
+    <OutputType>Exe</OutputType>
+    <UnoSingleProject>true</UnoSingleProject>
+    <ApplicationTitle>PacMan.App</ApplicationTitle>
+    <ApplicationId>com.companyname.pacman-app</ApplicationId>
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
+    <ApplicationPublisher>PacMan.App</ApplicationPublisher>
+    <Description>PacMan.App powered by Uno Platform.</Description>
+    <ApplicationIdGuid>71833777-707A-41A3-8472-E76A8B108994</ApplicationIdGuid>
+
+    <UnoFeatures></UnoFeatures>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.3.11" />
-    <PackageReference Include="Avalonia.Desktop" Version="11.3.11" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.11" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.11" />
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-    <PackageReference Include="Avalonia.Diagnostics" Version="11.3.11">
-      <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
-      <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
-    </PackageReference>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />    
+    <PackageReference Include="Uno.WinUI.Skia.Gtk" Version="5.2.161" />
+    <PackageReference Include="Uno.Extensions.Hosting.WinUI" Version="4.1.28" />
   </ItemGroup>
 
   <ItemGroup>
-        <ProjectReference Include="..\PacMan.Core\PacMan.Core.csproj" />
-      </ItemGroup>
-    
-      <ItemGroup>
-        <AvaloniaXaml Include="**\*.xaml" />
-      </ItemGroup>
-    </Project>
+    <ProjectReference Include="..\PacMan.Core\PacMan.Core.csproj" />
+  </ItemGroup>
+</Project>
