@@ -47,7 +47,8 @@ public class GameEngine
     /// </summary>
     public void MovePlayer(Direction direction)
     {
-        TryMove(Player, direction);
+        int newX = Player.X;
+        int newY = Player.Y;
     }
 
     /// <summary>
@@ -81,6 +82,26 @@ public class GameEngine
         {
             entity.X = newX;
             entity.Y = newY;
+
+            // Consome o item no mapa se for o pacman 
+            if (entity is Player)
+            {
+                var currentTile = Map.Tiles[newY, newX];
+                if (currentTile == TileType.Pellet || currentTile == TileType.PowerPellet)
+                {
+                    Map.Tiles[newY, newX] = TileType.Path; // Remove a pastilha do mapa
+                }
+            }
+        }
+
+        CheckCollisions();
+    }
+
+    private void CheckCollisions()
+    {
+        if (Ghosts.Any(g => g.X == Player.X && g.Y == Player.Y))
+        {
+            InitializePlayerPosition();
         }
     }
 
@@ -92,5 +113,22 @@ public class GameEngine
 
         // Não permite atravessar paredes
         return Map.Tiles[y, x] != TileType.Wall;
+    }
+
+    private void InitializePlayerPosition()
+    {
+        // Percorre o mapa para encontrar uma posição que não seja parede
+        for (int y = 0; y < Map.Height; y++)
+        {
+            for (int x = 0; x < Map.Width; x++)
+            {
+                if (Map.Tiles[y, x] != TileType.Wall)
+                {
+                    Player.X = x;
+                    Player.Y = y;
+                    return;
+                }
+            }
+        }
     }
 }

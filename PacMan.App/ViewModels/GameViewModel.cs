@@ -3,6 +3,8 @@ using PacMan.Core;
 using PacMan.Core.Models;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using PacMan.Core.Enums;
+using System.Collections.Generic;
 
 namespace PacMan.App.ViewModels;
 
@@ -25,12 +27,15 @@ public class GameViewModel : INotifyPropertyChanged
 
     public ObservableCollection<Ghost> Ghosts { get; }
 
+    public ObservableCollection<ScoreEntry> HighScores { get; } = new();
+
     public GameViewModel()
     {
-        // Mapa pequeno só pra visualização inicial
-        _engine = new GameEngine(15, 11);
+        _engine = new GameEngine(28, 26);
+        Ghosts = new ObservableCollection<Ghost>(_engine.Ghosts);
 
         Ghosts = new ObservableCollection<Ghost>(_engine.Ghosts);
+        LoadHighScores();
     }
 
     public bool IsGameStarted
@@ -56,6 +61,31 @@ public class GameViewModel : INotifyPropertyChanged
         {
             IsGameStarted = true;
         }
+    }
+
+    public void MovePlayer(Direction direction)
+    {
+        if (!IsGameStarted) return;
+
+        _engine.MovePlayer(direction);
+
+        _engine.MoveGhosts();
+
+        OnPropertyChanged(nameof(Player));
+        OnPropertyChanged(nameof(Ghosts));
+        OnPropertyChanged(nameof(Tiles)); 
+    }
+
+    private void LoadHighScores()
+    {
+        var mockScores = new List<ScoreEntry>
+        {
+            new ScoreEntry { PlayerName = "PAC MAN", Score = 5000},
+            new ScoreEntry { PlayerName = "GHOST YELLOW", Score = 3500},
+            new ScoreEntry { PlayerName = "GHOST RED", Score = 1200}
+        };
+
+        foreach (var s in mockScores) HighScores.Add(s);
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
