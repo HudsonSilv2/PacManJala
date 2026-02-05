@@ -1,0 +1,23 @@
+# Pastas de compilação e binários
+[Aa]bin/
+[Oo]bj/
+bin/
+obj/
+
+# Visual Studio & VS Code
+.vs/
+.vscode/
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
+
+# Testes e Resultados
+TestResults/
+
+# Sistema Operativo
+.DS_Store
+Thumbs.db
+
+# Uno Platform & Mobile específicos (se aplicável)
+.uno/
