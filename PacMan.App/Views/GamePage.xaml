@@ -22,13 +22,19 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Text="PAC-MAN"
-                       Grid.ColumnSpan="2"
-                       HorizontalAlignment="Center"
-                       FontSize="42"
-                       Foreground="Yellow"
-                       FontWeight="Bold"
-                       Grid.Row="0"/>
+            <StackPanel Grid.Row="0" Orientation="Vertical" Margin="0,10">
+    <TextBlock
+        Text="PAC-MAN"
+        FontSize="40"
+        FontWeight="Bold"
+        Foreground="Yellow"
+        HorizontalAlignment="Center"/>
+    
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+        <TextBlock Text="SCORE: " FontSize="24" Foreground="White" FontWeight="Bold"/>
+        <TextBlock Text="{Binding CurrentScore}" FontSize="24" Foreground="Yellow" FontWeight="Bold"/>
+    </StackPanel>
+</StackPanel>
 
             <Grid Grid.Row="1"
                   Grid.Column="0"

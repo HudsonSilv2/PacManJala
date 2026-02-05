@@ -109,16 +109,22 @@ public class GameViewModel : INotifyPropertyChanged
         }
     }
 
-    public void MovePlayer(Direction direction)
-    {
-        if (!IsGameStarted) return;
+public int CurrentScore => _engine.Player.Score;
 
-        _engine.MovePlayer(direction);
-        _engine.MoveGhosts();
+// Atualize o método MovePlayer para avisar a UI sobre o score
+public void MovePlayer(Direction direction)
+{
+    if (!IsGameStarted) return;
 
-        OnPropertyChanged(nameof(GameObjects));
-        UpdateTilesUI();
-    }
+    _engine.MovePlayer(direction);
+    _engine.MoveGhosts();
+
+    // Notifica que o Score mudou para atualizar o TextBlock na tela
+    OnPropertyChanged(nameof(CurrentScore)); 
+    
+    OnPropertyChanged(nameof(GameObjects));
+    UpdateTilesUI();
+}
 
     private void UpdateTilesUI()
     {
@@ -135,7 +141,8 @@ public class GameViewModel : INotifyPropertyChanged
         {
             new ScoreEntry { PlayerName = "PAC MAN", Score = 5000},
             new ScoreEntry { PlayerName = "GHOST YELLOW", Score = 3500},
-            new ScoreEntry { PlayerName = "GHOST RED", Score = 1200}
+            new ScoreEntry { PlayerName = "GHOST RED", Score = 1200},
+            new ScoreEntry { PlayerName = "Player", Score = Player.Score}
         };
 
         foreach (var s in mockScores) HighScores.Add(s);

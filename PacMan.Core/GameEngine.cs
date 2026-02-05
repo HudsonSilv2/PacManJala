@@ -80,20 +80,27 @@ public class GameEngine
         }
 
         if (CanMoveTo(newX, newY))
-        {
-            entity.X = newX;
-            entity.Y = newY;
+    {
+        entity.X = newX;
+        entity.Y = newY;
 
-            // Consome o item no mapa se for o pacman 
-            if (entity is Player)
+        if (entity is Player player)
+        {
+            var currentTile = Map.Tiles[newY, newX];
+            
+            // Adicionando pontuação
+            if (currentTile == TileType.Pellet)
             {
-                var currentTile = Map.Tiles[newY, newX];
-                if (currentTile == TileType.Pellet || currentTile == TileType.PowerPellet)
-                {
-                    Map.Tiles[newY, newX] = TileType.Path; // Remove a pastilha do mapa
-                }
+                player.Score += 10; // 10 pontos por pastilha normal
+                Map.Tiles[newY, newX] = TileType.Path;
+            }
+            else if (currentTile == TileType.PowerPellet)
+            {
+                player.Score += 50; // 50 pontos por pastilha de poder
+                Map.Tiles[newY, newX] = TileType.Path;
             }
         }
+    }
 
         CheckCollisions();
     }
