@@ -4,14 +4,41 @@ using PacMan.Core.Models;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using PacMan.Core.Enums;
-using System.Collections.Generic;
+using System.Windows.Input;
+using System;
+using System.Linq;
 
 namespace PacMan.App.ViewModels;
 
-/// <summary>
-/// ViewModel principal do jogo.
-/// Faz a ponte entre o Core e a interface.
-/// </summary>
+// Classe auxiliar para o comando, uma implementação simples de ICommand
+public class RelayCommand : ICommand
+{
+    private readonly Action<object> _execute;
+    private readonly Predicate<object> _canExecute;
+    public event EventHandler CanExecuteChanged;
+
+    public RelayCommand(Action<object> execute, Predicate<object> canExecute = null)
+    {
+        _execute = execute ?? throw new ArgumentNullException(nameof(execute));
+        _canExecute = canExecute;
+    }
+
+    public bool CanExecute(object parameter) => _canExecute == null || _canExecute(parameter);
+    public void Execute(object parameter) => _execute(parameter);
+
+    // Método para permitir a atualização manual do estado do comando
+    public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+}
+
+
+public class Tile
+{
+    public int X { get; set; }
+    public int Y { get; set; }
+    public TileType Type { get; set; }
+    public double Size { get; set; } = 20; // Tamanho padrão
+}
+
 public class GameViewModel : INotifyPropertyChanged
 {
     private readonly GameEngine _engine;
@@ -20,22 +47,37 @@ public class GameViewModel : INotifyPropertyChanged
     public int MapWidth => _engine.Map.Width;
     public int MapHeight => _engine.Map.Height;
 
-    // Expondo o mapa para a UI
-    public TileType[,] Tiles => _engine.Map.Tiles;
-
-    public Player Player => _engine.Player;
-
-    public ObservableCollection<Ghost> Ghosts { get; }
+    public ObservableCollection<Tile> Tiles { get; } = new();
+    public ObservableCollection<Entity> GameObjects { get; } = new();
 
     public ObservableCollection<ScoreEntry> HighScores { get; } = new();
+
+    public ICommand StartGameCommand { get; }
+    public ICommand MoveCommand { get; }
 
     public GameViewModel()
     {
         _engine = new GameEngine(28, 26);
-        Ghosts = new ObservableCollection<Ghost>(_engine.Ghosts);
 
-        Ghosts = new ObservableCollection<Ghost>(_engine.Ghosts);
+        // Preenche as coleções para a UI
+        for (int y = 0; y < _engine.Map.Height; y++)
+        {
+            for (int x = 0; x < _engine.Map.Width; x++)
+            {
+                Tiles.Add(new Tile { X = x, Y = y, Type = _engine.Map.Tiles[y, x] });
+            }
+        }
+        
+        GameObjects.Add(_engine.Player);
+        foreach (var ghost in _engine.Ghosts)
+        {
+            GameObjects.Add(ghost);
+        }
+
         LoadHighScores();
+
+        StartGameCommand = new RelayCommand(_ => StartGame());
+        MoveCommand = new RelayCommand(param => MovePlayer((Direction)param));
     }
 
     public bool IsGameStarted
@@ -52,7 +94,6 @@ public class GameViewModel : INotifyPropertyChanged
         }
     }
 
-    // Define se a mensagem de start deve aparecer se o jogo não começou)
     public bool WelcomeMessageVisibility => !IsGameStarted;
 
     public void StartGame()
@@ -68,17 +109,12 @@ public class GameViewModel : INotifyPropertyChanged
         if (!IsGameStarted) return;
 
         _engine.MovePlayer(direction);
-
         _engine.MoveGhosts();
-
-        OnPropertyChanged(nameof(Player));
-        OnPropertyChanged(nameof(Ghosts));
-        OnPropertyChanged(nameof(Tiles)); 
     }
 
     private void LoadHighScores()
     {
-        var mockScores = new List<ScoreEntry>
+        var mockScores = new System.Collections.Generic.List<ScoreEntry>
         {
             new ScoreEntry { PlayerName = "PAC MAN", Score = 5000},
             new ScoreEntry { PlayerName = "GHOST YELLOW", Score = 3500},

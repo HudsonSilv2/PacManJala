@@ -13,12 +13,14 @@ public class GameEngine
     public Map Map { get; }
     public Player Player { get; }
     public List<Ghost> Ghosts { get; }
+    private readonly Position _playerSpawn;
 
     public GameEngine(int width, int height)
     {
         // Gera o mapa
         var generator = new MapGenerator();
         var generatedMap = generator.Generate(width, height);
+        _playerSpawn = generatedMap.PlayerSpawn;
 
         // Cria mapa
         Map = new Map(generatedMap.Tiles);
@@ -26,8 +28,8 @@ public class GameEngine
         // Cria jogador
         Player = new Player
         {
-            X = generatedMap.PlayerSpawn.X,
-            Y = generatedMap.PlayerSpawn.Y
+            X = _playerSpawn.X,
+            Y = _playerSpawn.Y
         };
 
         // Cria fantasmas
@@ -47,8 +49,7 @@ public class GameEngine
     /// </summary>
     public void MovePlayer(Direction direction)
     {
-        int newX = Player.X;
-        int newY = Player.Y;
+        TryMove(Player, direction);
     }
 
     /// <summary>
@@ -117,18 +118,7 @@ public class GameEngine
 
     private void InitializePlayerPosition()
     {
-        // Percorre o mapa para encontrar uma posição que não seja parede
-        for (int y = 0; y < Map.Height; y++)
-        {
-            for (int x = 0; x < Map.Width; x++)
-            {
-                if (Map.Tiles[y, x] != TileType.Wall)
-                {
-                    Player.X = x;
-                    Player.Y = y;
-                    return;
-                }
-            }
-        }
+        Player.X = _playerSpawn.X;
+        Player.Y = _playerSpawn.Y;
     }
 }

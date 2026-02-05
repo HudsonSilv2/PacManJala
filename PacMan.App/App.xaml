@@ -1,17 +1,5 @@
 <Application
-  x:Class="PacMan.App.App"
-  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-  xmlns:local="using:PacMan.App">
-
-  <Application.Resources>
-    <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
-        <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls"/>
-      </ResourceDictionary.MergedDictionaries>
-      <ResourceDictionary>
-        <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-      </ResourceDictionary>
-    </ResourceDictionary>
-  </Application.Resources>
+    x:Class="PacMan.App.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 </Application>

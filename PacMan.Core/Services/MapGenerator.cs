@@ -9,7 +9,7 @@ namespace PacMan.Core.Services;
 /// </summary>
 public class MapGenerator
 {
-    // # = Parede, * = Ponto pequeno, O = Ponto grande, . = Caminho vazio
+    // # = Parede, * = Ponto pequeno, O = Ponto grande, . = Caminho vazio, P = Spawn do Jogador
     private readonly string[] StaticMapLayout = new string[]
     {
         "############################",
@@ -28,7 +28,7 @@ public class MapGenerator
         "......*...#      #...*......",
         "######*##.#      #.##*######",
         "######*##.###--###.##*######",
-        "######*##..........##*######",
+        "######*##....P.....##*######",
         "######*#####*##*#####*######",
         "######*#####*##*#####*######",
         "#******##****##****##******#",
@@ -70,10 +70,14 @@ public class MapGenerator
                     '*' => TileType.Pellet,
                     'O' => TileType.PowerPellet,
                     '-' => TileType.Path,
+                    'P' => TileType.Path,
                     _ => TileType.Path
                 };
 
-                if (tileChar == '.') playerSpawn = new Position(x, y);
+                if (tileChar == 'P')
+                {
+                    playerSpawn = new Position(x, y);
+                }
                 
                 // Lógica que define a posição inicial dos fantasmas no mapa
                 if (tileChar == ' ' && ghosts.Count < 4)
