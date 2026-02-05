@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using PacMan.Core;
 using PacMan.Core.Models;
 using System.ComponentModel;
@@ -44,6 +45,10 @@ public class GameViewModel : INotifyPropertyChanged
     private readonly GameEngine _engine;
     private bool _isGameStarted = false;
 
+    public Player Player => _engine.Player;
+    public IEnumerable<Ghost> Ghosts => _engine.Ghosts;
+    public TileType[,] RawTiles => _engine.Map.Tiles;
+
     public int MapWidth => _engine.Map.Width;
     public int MapHeight => _engine.Map.Height;
 
@@ -67,7 +72,7 @@ public class GameViewModel : INotifyPropertyChanged
                 Tiles.Add(new Tile { X = x, Y = y, Type = _engine.Map.Tiles[y, x] });
             }
         }
-        
+
         GameObjects.Add(_engine.Player);
         foreach (var ghost in _engine.Ghosts)
         {
@@ -110,6 +115,18 @@ public class GameViewModel : INotifyPropertyChanged
 
         _engine.MovePlayer(direction);
         _engine.MoveGhosts();
+
+        OnPropertyChanged(nameof(GameObjects));
+        UpdateTilesUI();
+    }
+
+    private void UpdateTilesUI()
+    {
+        for (int i = 0; i < Tiles.Count; i++)
+        {
+            var tile = Tiles[i];
+            tile.Type = _engine.Map.Tiles[tile.Y, tile.X];
+        }
     }
 
     private void LoadHighScores()
