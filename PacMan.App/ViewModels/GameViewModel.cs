@@ -32,12 +32,20 @@ public class RelayCommand : ICommand
 }
 
 
-public class Tile
+public class Tile : INotifyPropertyChanged
 {
+    private TileType _type;
     public int X { get; set; }
     public int Y { get; set; }
-    public TileType Type { get; set; }
-    public double Size { get; set; } = 20; // Tamanho padrão
+    public TileType Type
+    {
+        get => _type;
+        set { _type = value; OnPropertyChanged(); }
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+    protected void OnPropertyChanged([CallerMemberName] string name = null)
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
 
 public class GameViewModel : INotifyPropertyChanged
@@ -62,7 +70,7 @@ public class GameViewModel : INotifyPropertyChanged
 
     public GameViewModel()
     {
-        _engine = new GameEngine(28, 26);
+        _engine = new GameEngine(28, 29);
 
         // Preenche as coleções para a UI
         for (int y = 0; y < _engine.Map.Height; y++)
@@ -109,22 +117,22 @@ public class GameViewModel : INotifyPropertyChanged
         }
     }
 
-public int CurrentScore => _engine.Player.Score;
+    public int CurrentScore => _engine.Player.Score;
 
-// Atualize o método MovePlayer para avisar a UI sobre o score
-public void MovePlayer(Direction direction)
-{
-    if (!IsGameStarted) return;
+    // Atualize o método MovePlayer para avisar a UI sobre o score
+    public void MovePlayer(Direction direction)
+    {
+        if (!IsGameStarted) return;
 
-    _engine.MovePlayer(direction);
-    _engine.MoveGhosts();
+        _engine.MovePlayer(direction);
+        _engine.MoveGhosts();
 
-    // Notifica que o Score mudou para atualizar o TextBlock na tela
-    OnPropertyChanged(nameof(CurrentScore)); 
-    
-    OnPropertyChanged(nameof(GameObjects));
-    UpdateTilesUI();
-}
+        // Notifica que o Score mudou para atualizar o TextBlock na tela
+        OnPropertyChanged(nameof(CurrentScore));
+
+        OnPropertyChanged(nameof(GameObjects));
+        UpdateTilesUI();
+    }
 
     private void UpdateTilesUI()
     {

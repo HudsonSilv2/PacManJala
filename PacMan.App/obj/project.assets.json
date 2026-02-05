@@ -7148,38 +7148,34 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\hudson\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\Mateus\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\hudson\\Documents\\JALA\\PacManJala\\PacMan.App\\PacMan.App.csproj",
+      "projectUniqueName": "C:\\Projetos\\PacManJala\\PacMan.App\\PacMan.App.csproj",
       "projectName": "PacMan.App",
-      "projectPath": "C:\\Users\\hudson\\Documents\\JALA\\PacManJala\\PacMan.App\\PacMan.App.csproj",
-      "packagesPath": "C:\\Users\\hudson\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\hudson\\Documents\\JALA\\PacManJala\\PacMan.App\\obj\\",
+      "projectPath": "C:\\Projetos\\PacManJala\\PacMan.App\\PacMan.App.csproj",
+      "packagesPath": "C:\\Users\\Mateus\\.nuget\\packages\\",
+      "outputPath": "C:\\Projetos\\PacManJala\\PacMan.App\\obj\\",
       "projectStyle": "PackageReference",
       "crossTargeting": true,
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\hudson\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config"
+        "C:\\Users\\Mateus\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0-desktop"
       ],
       "sources": {
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net8.0-desktop8.0": {
           "targetAlias": "net8.0-desktop",
           "projectReferences": {
-            "C:\\Users\\hudson\\Documents\\JALA\\PacManJala\\PacMan.Core\\PacMan.Core.csproj": {
-              "projectPath": "C:\\Users\\hudson\\Documents\\JALA\\PacManJala\\PacMan.Core\\PacMan.Core.csproj"
+            "C:\\Projetos\\PacManJala\\PacMan.Core\\PacMan.Core.csproj": {
+              "projectPath": "C:\\Projetos\\PacManJala\\PacMan.Core\\PacMan.Core.csproj"
             }
           }
         }
@@ -7270,12 +7266,30 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.22, 8.0.22]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.win-x64",
+            "version": "[8.0.22, 8.0.22]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.22, 8.0.22]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[8.0.22, 8.0.22]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.101/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

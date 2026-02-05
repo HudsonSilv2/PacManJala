@@ -22,6 +22,7 @@ public sealed partial class GamePage : UserControl
     // Referências visuais do pacman
     private UIElement _playerVisual;
     private double _currentCellSize = 40;
+    private Dictionary<(int x, int y), UIElement> _pelletVisuals = new();
 
     public GamePage()
     {
@@ -29,17 +30,14 @@ public sealed partial class GamePage : UserControl
         this.DataContext = ViewModel;
         this.IsTabStop = true;
         this.Loaded += GamePage_Loaded;
+        this.PointerPressed += (s, e) => this.Focus(FocusState.Programmatic);
     }
 
     private void GamePage_Loaded(object sender, RoutedEventArgs e)
     {
+        this.KeyDown += GamePage_KeyDown;
+        this.IsTabStop = true;
         this.Focus(FocusState.Programmatic);
-
-        var window = Microsoft.UI.Xaml.Window.Current;
-        if (this.XamlRoot != null)
-        {
-            this.XamlRoot.Content.KeyDown += GamePage_KeyDown;
-        }
     }
 
     private void GamePage_KeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
@@ -76,6 +74,14 @@ public sealed partial class GamePage : UserControl
             case Windows.System.VirtualKey.Right: vm.MovePlayer(PacMan.Core.Enums.Direction.Right); break;
         }
 
+        var playerX = vm.Player.X;
+        var playerY = vm.Player.Y;
+
+        if (vm.RawTiles[playerY, playerX] == TileType.Path)
+        {
+            UpdatePelletsVisual(playerX, playerY);
+        }
+
         // Atualiza a tela após mover
         UpdateEntityPosition(_playerVisual, vm.Player);
 
@@ -110,15 +116,19 @@ public sealed partial class GamePage : UserControl
 
         GameCanvas.Children.Clear();
         _ghostVisuals.Clear();
+        _pelletVisuals.Clear();
 
         var tiles = ViewModel.RawTiles;
         for (int y = 0; y < ViewModel.MapHeight; y++)
         {
             for (int x = 0; x < ViewModel.MapWidth; x++)
             {
-                if (tiles[y, x] == TileType.Wall)
+                UIElement visual = null;
+                TileType type = tiles[y, x];
+
+                if (type == TileType.Wall)
                 {
-                    var wall = new Rectangle
+                    visual = new Rectangle
                     {
                         Width = _currentCellSize,
                         Height = _currentCellSize,
@@ -126,9 +136,39 @@ public sealed partial class GamePage : UserControl
                         Stroke = new SolidColorBrush(Colors.Black),
                         StrokeThickness = 0.5
                     };
-                    Canvas.SetLeft(wall, x * _currentCellSize);
-                    Canvas.SetTop(wall, y * _currentCellSize);
-                    GameCanvas.Children.Add(wall);
+                }
+                else if (type == TileType.Pellet)
+                {
+                    // Desenha a pastilha pequena
+                    visual = new Ellipse
+                    {
+                        Width = _currentCellSize * 0.2, // 20% do tamanho da célula
+                        Height = _currentCellSize * 0.2,
+                        Fill = new SolidColorBrush(Colors.White),
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center
+                    };
+                    _pelletVisuals[(x, y)] = visual;
+                }
+                else if (type == TileType.PowerPellet)
+                {
+                    visual = new Ellipse
+                    {
+                        Width = _currentCellSize * 0.5,
+                        Height = _currentCellSize * 0.5,
+                        Fill = new SolidColorBrush(Colors.Yellow)
+                    };
+                    _pelletVisuals[(x, y)] = visual;
+                }
+
+                if (visual != null)
+                {
+                    double left = x * _currentCellSize + (_currentCellSize - (visual is FrameworkElement feW ? feW.Width : 0)) / 2;
+                    double top = y * _currentCellSize + (_currentCellSize - (visual is FrameworkElement feH ? feH.Height : 0)) / 2;
+
+                    Canvas.SetLeft(visual, left);
+                    Canvas.SetTop(visual, top);
+                    GameCanvas.Children.Add(visual);
                 }
             }
         }
@@ -170,6 +210,15 @@ public sealed partial class GamePage : UserControl
         {
             Canvas.SetLeft(visual, entity.X * _currentCellSize + 2);
             Canvas.SetTop(visual, entity.Y * _currentCellSize + 2);
+        }
+    }
+
+    private void UpdatePelletsVisual(int x, int y)
+    {
+        if (_pelletVisuals.TryGetValue((x, y), out var visual))
+        {
+            GameCanvas.Children.Remove(visual);
+            _pelletVisuals.Remove((x, y));
         }
     }
 }

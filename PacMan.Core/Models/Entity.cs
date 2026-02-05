@@ -21,6 +21,6 @@ public abstract class Entity : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
     protected void OnPropertyChanged([CallerMemberName] string? name = null) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name.ToString()));
-    
+    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
 }
