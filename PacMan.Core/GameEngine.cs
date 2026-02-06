@@ -14,6 +14,8 @@ public class GameEngine
     public Player Player { get; }
     public List<Ghost> Ghosts { get; }
     private readonly Position _playerSpawn;
+    public int PelletsRemaining { get; private set; }
+    public bool IsPlayerPoweredUp { get; private set; }
 
     public GameEngine(int width, int height)
     {
@@ -24,6 +26,9 @@ public class GameEngine
 
         // Cria mapa
         Map = new Map(generatedMap.Tiles);
+
+        // Contabiliza as pastilhas
+        PelletsRemaining = CountPellets();
 
         // Cria jogador
         Player = new Player
@@ -80,27 +85,28 @@ public class GameEngine
         }
 
         if (CanMoveTo(newX, newY))
-    {
-        entity.X = newX;
-        entity.Y = newY;
-
-        if (entity is Player player)
         {
-            var currentTile = Map.Tiles[newY, newX];
-            
-            // Adicionando pontuação
-            if (currentTile == TileType.Pellet)
+            entity.X = newX;
+            entity.Y = newY;
+
+            if (entity is Player player)
             {
-                player.Score += 10; // 10 pontos por pastilha normal
-                Map.Tiles[newY, newX] = TileType.Path;
-            }
-            else if (currentTile == TileType.PowerPellet)
-            {
-                player.Score += 50; // 50 pontos por pastilha de poder
-                Map.Tiles[newY, newX] = TileType.Path;
+                var currentTile = Map.Tiles[newY, newX];
+
+                // Adicionando pontuação
+                if (currentTile == TileType.Pellet || currentTile == TileType.PowerPellet)
+                {
+                    player.Score += (currentTile == TileType.Pellet) ? 10 : 50;
+                    Map.Tiles[newY, newX] = TileType.Path;
+                    PelletsRemaining--; // Decrementa para saber quando o nível termina
+
+                    if (currentTile == TileType.PowerPellet)
+                    {
+                        IsPlayerPoweredUp = true;
+                    }
+                }
             }
         }
-    }
 
         CheckCollisions();
     }
@@ -127,5 +133,15 @@ public class GameEngine
     {
         Player.X = _playerSpawn.X;
         Player.Y = _playerSpawn.Y;
+    }
+
+    private int CountPellets()
+    {
+        int count = 0;
+        for (int y = 0; y < Map.Height; y++)
+            for (int x = 0; x < Map.Width; x++)
+                if (Map.Tiles[y, x] == TileType.Pellet || Map.Tiles[y, x] == TileType.PowerPellet)
+                    count++;
+        return count;
     }
 }
