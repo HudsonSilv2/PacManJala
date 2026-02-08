@@ -25,4 +25,8 @@
   <ItemGroup>
     <ProjectReference Include="..\PacMan.Core\PacMan.Core.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\**\*.*" />
+  </ItemGroup>
 </Project>
