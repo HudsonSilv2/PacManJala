@@ -16,6 +16,8 @@ public sealed partial class GamePage : UserControl
 {
     public GameViewModel ViewModel { get; } = new GameViewModel();
 
+    public event EventHandler GameEnded;
+
     // Referências visuais dos fantasmas
     private Dictionary<Ghost, UIElement> _ghostVisuals = new();
 
@@ -23,6 +25,10 @@ public sealed partial class GamePage : UserControl
     private UIElement _playerVisual;
     private double _currentCellSize = 40;
     private Dictionary<(int x, int y), UIElement> _pelletVisuals = new();
+    private DispatcherTimer _gameTimer;
+    private DispatcherTimer _winTimer;
+    private PacMan.Core.Enums.Direction? _currentDirection;
+    private bool _winSequenceStarted;
 
     public GamePage()
     {
@@ -33,11 +39,37 @@ public sealed partial class GamePage : UserControl
         this.PointerPressed += (s, e) => this.Focus(FocusState.Programmatic);
     }
 
+    public void StartFromMenu()
+    {
+        ViewModel.StartGame();
+        DrawMap();
+        StartTimer();
+        this.Focus(FocusState.Programmatic);
+    }
+
     private void GamePage_Loaded(object sender, RoutedEventArgs e)
     {
         this.KeyDown += GamePage_KeyDown;
         this.IsTabStop = true;
         this.Focus(FocusState.Programmatic);
+
+        if (_gameTimer == null)
+        {
+            _gameTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(120)
+            };
+            _gameTimer.Tick += GameTimer_Tick;
+        }
+
+        if (_winTimer == null)
+        {
+            _winTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(3)
+            };
+            _winTimer.Tick += WinTimer_Tick;
+        }
     }
 
     private void GamePage_KeyDown(object sender, Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e)
@@ -53,46 +85,46 @@ public sealed partial class GamePage : UserControl
             return;
         }
 
+        if (e.Key == Windows.System.VirtualKey.P)
+        {
+            vm.TogglePause();
+            e.Handled = true;
+            return;
+        }
+
+        if (e.Key == Windows.System.VirtualKey.R)
+        {
+            vm.RestartGame();
+            DrawMap();
+            _currentDirection = null;
+            _winSequenceStarted = false;
+            e.Handled = true;
+            return;
+        }
+
         // Lógica de início de jogo
         if (!vm.IsGameStarted)
         {
-            if (e.Key == Windows.System.VirtualKey.Enter)
-            {
-                vm.StartGame();
-                e.Handled = true;
-                DrawMap();
-            }
+        if (e.Key == Windows.System.VirtualKey.Enter)
+        {
+            vm.StartGame();
+            e.Handled = true;
+            DrawMap();
+            StartTimer();
+            _winSequenceStarted = false;
+        }
             return;
         }
 
         // Movimentação do pacman
         switch (key)
         {
-            case Windows.System.VirtualKey.Up: vm.MovePlayer(PacMan.Core.Enums.Direction.Up); break;
-            case Windows.System.VirtualKey.Down: vm.MovePlayer(PacMan.Core.Enums.Direction.Down); break;
-            case Windows.System.VirtualKey.Left: vm.MovePlayer(PacMan.Core.Enums.Direction.Left); break;
-            case Windows.System.VirtualKey.Right: vm.MovePlayer(PacMan.Core.Enums.Direction.Right); break;
+            case Windows.System.VirtualKey.Up: _currentDirection = PacMan.Core.Enums.Direction.Up; break;
+            case Windows.System.VirtualKey.Down: _currentDirection = PacMan.Core.Enums.Direction.Down; break;
+            case Windows.System.VirtualKey.Left: _currentDirection = PacMan.Core.Enums.Direction.Left; break;
+            case Windows.System.VirtualKey.Right: _currentDirection = PacMan.Core.Enums.Direction.Right; break;
+            default: return;
         }
-
-        var playerX = vm.Player.X;
-        var playerY = vm.Player.Y;
-
-        if (vm.RawTiles[playerY, playerX] == TileType.Path)
-        {
-            UpdatePelletsVisual(playerX, playerY);
-        }
-
-        // Atualiza a tela após mover
-        UpdateEntityPosition(_playerVisual, vm.Player);
-
-        foreach (var ghost in vm.Ghosts)
-        {
-            if (_ghostVisuals.ContainsKey(ghost))
-            {
-                UpdateEntityPosition(_ghostVisuals[ghost], ghost);
-            }
-        }
-
     }
 
     private void GameContainer_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -175,6 +207,29 @@ public sealed partial class GamePage : UserControl
         RenderEntities();
     }
 
+    private void GameTimer_Tick(object sender, object e)
+    {
+        var vm = ViewModel;
+        if (!vm.IsGameStarted || vm.IsPaused || vm.IsGameOver)
+        {
+            return;
+        }
+
+        if (vm.IsWin)
+        {
+            StartWinSequence();
+            return;
+        }
+
+        if (_currentDirection == null)
+        {
+            return;
+        }
+
+        vm.MovePlayer(_currentDirection.Value);
+        RefreshAfterMove();
+    }
+
     private void RenderEntities()
     {
         // Cria o visual do Pac-Man
@@ -204,6 +259,33 @@ public sealed partial class GamePage : UserControl
         }
     }
 
+    private void RefreshAfterMove()
+    {
+        var vm = ViewModel;
+        var playerX = vm.Player.X;
+        var playerY = vm.Player.Y;
+
+        if (vm.RawTiles[playerY, playerX] == TileType.Path)
+        {
+            UpdatePelletsVisual(playerX, playerY);
+        }
+
+        UpdateEntityPosition(_playerVisual, vm.Player);
+
+        foreach (var ghost in vm.Ghosts)
+        {
+            if (_ghostVisuals.ContainsKey(ghost))
+            {
+                UpdateEntityPosition(_ghostVisuals[ghost], ghost);
+            }
+        }
+
+        if (vm.IsWin)
+        {
+            StartWinSequence();
+        }
+    }
+
     private void UpdateEntityPosition(UIElement visual, Entity entity)
     {
         if (visual != null && entity != null)
@@ -220,5 +302,78 @@ public sealed partial class GamePage : UserControl
             GameCanvas.Children.Remove(visual);
             _pelletVisuals.Remove((x, y));
         }
+    }
+
+    private void Restart_Click(object sender, RoutedEventArgs e)
+    {
+        ViewModel.RestartGame();
+        DrawMap();
+        _currentDirection = null;
+        _winSequenceStarted = false;
+        StartTimer();
+        this.Focus(FocusState.Programmatic);
+    }
+
+    private void Menu_Click(object sender, RoutedEventArgs e)
+    {
+        ViewModel.ResetForMenu();
+        _currentDirection = null;
+        _winSequenceStarted = false;
+        StopWinTimer();
+        StopTimer();
+        GameEnded?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void StartTimer()
+    {
+        if (_gameTimer == null)
+        {
+            return;
+        }
+
+        if (!_gameTimer.IsEnabled)
+        {
+            _gameTimer.Start();
+        }
+    }
+
+    private void StopTimer()
+    {
+        if (_gameTimer != null && _gameTimer.IsEnabled)
+        {
+            _gameTimer.Stop();
+        }
+    }
+
+    private void StartWinSequence()
+    {
+        if (_winSequenceStarted)
+        {
+            return;
+        }
+
+        _winSequenceStarted = true;
+        StopTimer();
+        if (_winTimer != null && !_winTimer.IsEnabled)
+        {
+            _winTimer.Start();
+        }
+    }
+
+    private void StopWinTimer()
+    {
+        if (_winTimer != null && _winTimer.IsEnabled)
+        {
+            _winTimer.Stop();
+        }
+    }
+
+    private void WinTimer_Tick(object sender, object e)
+    {
+        StopWinTimer();
+        _winSequenceStarted = false;
+        ViewModel.StartNextRoundKeepScore();
+        DrawMap();
+        StartTimer();
     }
 }

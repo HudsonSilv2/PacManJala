@@ -17,6 +17,11 @@ public class GameEngine
     public int PelletsRemaining { get; private set; }
     public bool IsPlayerPoweredUp { get; private set; }
 
+    public int LivesRemaining { get; private set; } = 3;
+    public bool IsGameOver => LivesRemaining <= 0;
+
+    private bool _playerDiedThisTurn;
+
     public GameEngine(int width, int height)
     {
         // Gera o mapa
@@ -71,6 +76,17 @@ public class GameEngine
         }
     }
 
+    public bool ConsumePlayerDeath()
+    {
+        if (_playerDiedThisTurn)
+        {
+            _playerDiedThisTurn = false;
+            return true;
+        }
+
+        return false;
+    }
+
     private void TryMove(Entity entity, Direction direction)
     {
         int newX = entity.X;
@@ -115,6 +131,12 @@ public class GameEngine
     {
         if (Ghosts.Any(g => g.X == Player.X && g.Y == Player.Y))
         {
+            if (LivesRemaining > 0)
+            {
+                LivesRemaining--;
+            }
+
+            _playerDiedThisTurn = true;
             InitializePlayerPosition();
         }
     }

@@ -23,18 +23,25 @@
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Row="0" Orientation="Vertical" Margin="0,10">
-    <TextBlock
-        Text="PAC-MAN"
-        FontSize="40"
-        FontWeight="Bold"
-        Foreground="Yellow"
-        HorizontalAlignment="Center"/>
-    
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-        <TextBlock Text="SCORE: " FontSize="24" Foreground="White" FontWeight="Bold"/>
-        <TextBlock Text="{Binding CurrentScore}" FontSize="24" Foreground="Yellow" FontWeight="Bold"/>
-    </StackPanel>
-</StackPanel>
+                <TextBlock
+                    Text="PAC-MAN"
+                    FontSize="40"
+                    FontWeight="Bold"
+                    Foreground="Yellow"
+                    HorizontalAlignment="Center"/>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="12">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="SCORE: " FontSize="24" Foreground="White" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding CurrentScore}" FontSize="24" Foreground="Yellow" FontWeight="Bold"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="LIVES: " FontSize="24" Foreground="White" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding LivesRemaining}" FontSize="24" Foreground="Cyan" FontWeight="Bold"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
 
             <Grid Grid.Row="1"
                   Grid.Column="0"
@@ -43,17 +50,46 @@
                         Background="#1a1a1a"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"/>
-            </Grid>
 
-            <TextBlock Text="Aperte ENTER para iniciar"
-                       Grid.Row="1"
-                       Grid.Column="0"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       FontSize="24"
-                       Foreground="White"
-                       Canvas.ZIndex="100"
-                       Visibility="{x:Bind ViewModel.WelcomeMessageVisibility, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>
+                <Border Background="#AA000000"
+                        Visibility="{Binding IsPaused, Converter={StaticResource BoolToVisibilityConverter}}"
+                        Canvas.ZIndex="200"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch">
+                    <TextBlock Text="PAUSED"
+                               Foreground="White"
+                               FontSize="36"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                </Border>
+
+                <Border Background="#CC000000"
+                        Visibility="{Binding IsGameOver, Converter={StaticResource BoolToVisibilityConverter}}"
+                        Canvas.ZIndex="300"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
+                        <TextBlock Text="GAME OVER" Foreground="Red" FontSize="40" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Pressione R para reiniciar" Foreground="White" HorizontalAlignment="Center"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+                            <Button Content="Restart" Click="Restart_Click" Padding="16,6"/>
+                            <Button Content="Menu" Click="Menu_Click" Padding="16,6"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border Background="#CC000000"
+                        Visibility="{Binding IsWin, Converter={StaticResource BoolToVisibilityConverter}}"
+                        Canvas.ZIndex="250"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
+                        <TextBlock Text="YOU WIN!" Foreground="Lime" FontSize="38" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Próxima rodada em 3s" Foreground="White" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
 
             <StackPanel Grid.Row="1"
                         Grid.Column="1"
@@ -88,12 +124,11 @@
                 </ListView>
             </StackPanel>
 
-            <TextBlock Text="Pressione ESC para sair"
-                       Grid.Row="2"
-                       Grid.ColumnSpan="2"
-                       Foreground="Gray"
-                       HorizontalAlignment="Center"
-                       Margin="0,10"/>
+            <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="16" Margin="0,10">
+                <TextBlock Text="ESC: sair" Foreground="Gray"/>
+                <TextBlock Text="P: pause" Foreground="Gray"/>
+                <TextBlock Text="R: restart" Foreground="Gray"/>
+            </StackPanel>
         </Grid>
     </Border>
 </UserControl>
