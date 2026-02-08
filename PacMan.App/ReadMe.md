@@ -1,7 +1,23 @@
-# Getting Started
+# PacMan App
 
-Welcome to the Uno Platform!
+Jogo Pac-Man em Uno Platform.
 
-To discover how to get started with your new app: https://aka.platform.uno/get-started
+**Objetivo**
+- Coma todas as pastilhas para vencer a fase.
+- Evite fantasmas e preserve suas vidas.
 
-For more information on how to use the Uno.Sdk or upgrade Uno Platform packages in your solution: https://aka.platform.uno/using-uno-sdk
+**Controles**
+- Setas: movimentação (contínua)
+- `P`: pausar
+- `R`: reiniciar
+- `ESC`: sair
+
+**Tutorial Rápido**
+- Na tela inicial, pressione `Start` para jogar.
+- O Pac-Man continua andando na última direção escolhida.
+- Perdeu 3 vidas? Game Over.
+- Comeu todas as pastilhas? Você vence e a próxima rodada começa automaticamente mantendo o score.
+
+**High Scores**
+- O ranking é salvo em `highscores.json` no `ApplicationData.Current.LocalFolder`.
+
