@@ -9,6 +9,8 @@ using Microsoft.UI.Input;
 using Windows.System;
 using PacMan.Core.Models;
 using PacMan.App.ViewModels;
+using PacMan.App.Services;
+using PacMan.Core.Enums;
 
 namespace PacMan.App.Views;
 
@@ -18,17 +20,34 @@ public sealed partial class GamePage : UserControl
 
     public event EventHandler GameEnded;
 
-    // Referências visuais dos fantasmas
-    private Dictionary<Ghost, UIElement> _ghostVisuals = new();
+    private sealed class GhostSpriteState
+    {
+        public Image Image { get; init; }
+        public SpriteAnimation Up { get; init; }
+        public SpriteAnimation Down { get; init; }
+        public SpriteAnimation Left { get; init; }
+        public SpriteAnimation Right { get; init; }
+        public Direction CurrentDirection { get; set; } = Direction.Left;
+        public int LastX { get; set; }
+        public int LastY { get; set; }
+    }
 
     // Referências visuais do pacman
-    private UIElement _playerVisual;
+    private Image _playerImage;
     private double _currentCellSize = 40;
     private Dictionary<(int x, int y), UIElement> _pelletVisuals = new();
     private DispatcherTimer _gameTimer;
     private DispatcherTimer _winTimer;
-    private PacMan.Core.Enums.Direction? _currentDirection;
+    private Direction? _currentDirection;
     private bool _winSequenceStarted;
+
+    private readonly Dictionary<Ghost, GhostSpriteState> _ghostSprites = new();
+    private SpriteAnimation _playerUp;
+    private SpriteAnimation _playerDown;
+    private SpriteAnimation _playerLeft;
+    private SpriteAnimation _playerRight;
+    private SpriteAnimation _playerAnim;
+    private Direction _playerDirection = Direction.Right;
 
     public GamePage()
     {
@@ -42,6 +61,7 @@ public sealed partial class GamePage : UserControl
     public void StartFromMenu()
     {
         ViewModel.StartGame();
+        _playerDirection = Direction.Right;
         DrawMap();
         StartTimer();
         this.Focus(FocusState.Programmatic);
@@ -109,6 +129,7 @@ public sealed partial class GamePage : UserControl
         {
             vm.StartGame();
             e.Handled = true;
+            _playerDirection = Direction.Right;
             DrawMap();
             StartTimer();
             _winSequenceStarted = false;
@@ -119,11 +140,19 @@ public sealed partial class GamePage : UserControl
         // Movimentação do pacman
         switch (key)
         {
-            case Windows.System.VirtualKey.Up: _currentDirection = PacMan.Core.Enums.Direction.Up; break;
-            case Windows.System.VirtualKey.Down: _currentDirection = PacMan.Core.Enums.Direction.Down; break;
-            case Windows.System.VirtualKey.Left: _currentDirection = PacMan.Core.Enums.Direction.Left; break;
-            case Windows.System.VirtualKey.Right: _currentDirection = PacMan.Core.Enums.Direction.Right; break;
+            case Windows.System.VirtualKey.Up: _currentDirection = Direction.Up; break;
+            case Windows.System.VirtualKey.Down: _currentDirection = Direction.Down; break;
+            case Windows.System.VirtualKey.Left: _currentDirection = Direction.Left; break;
+            case Windows.System.VirtualKey.Right: _currentDirection = Direction.Right; break;
             default: return;
+        }
+
+        _playerDirection = _currentDirection.Value;
+        _playerAnim = GetPlayerAnimation(_playerDirection);
+        _playerAnim.Reset();
+        if (_playerImage != null)
+        {
+            _playerImage.Source = _playerAnim.GetFrameImage();
         }
     }
 
@@ -147,7 +176,7 @@ public sealed partial class GamePage : UserControl
         GameCanvas.Height = _currentCellSize * ViewModel.MapHeight;
 
         GameCanvas.Children.Clear();
-        _ghostVisuals.Clear();
+        _ghostSprites.Clear();
         _pelletVisuals.Clear();
 
         var tiles = ViewModel.RawTiles;
@@ -232,30 +261,45 @@ public sealed partial class GamePage : UserControl
 
     private void RenderEntities()
     {
-        // Cria o visual do Pac-Man
-        _playerVisual = new Ellipse
+        InitializePlayerAnimations();
+
+        _playerImage = new Image
         {
             Width = _currentCellSize - 4,
             Height = _currentCellSize - 4,
-            Fill = new SolidColorBrush(Colors.Yellow)
+            Stretch = Stretch.Uniform
         };
-        GameCanvas.Children.Add(_playerVisual);
-        UpdateEntityPosition(_playerVisual, ViewModel.Player);
+        _playerAnim = GetPlayerAnimation(_playerDirection);
+        _playerImage.Source = _playerAnim.GetFrameImage();
+        GameCanvas.Children.Add(_playerImage);
+        UpdateEntityPosition(_playerImage, ViewModel.Player);
 
         // Cria o visual dos Fantasmas
+        var ghostBases = new[]
+        {
+            "fantasmavermelho",
+            "fantasmarosa",
+            "fantasmaazul",
+            "fantasmalaranja"
+        };
+
+        int ghostIndex = 0;
         foreach (var ghost in ViewModel.Ghosts)
         {
-            var ghostShape = new Rectangle
+            var baseName = ghostBases[ghostIndex % ghostBases.Length];
+            ghostIndex++;
+
+            var ghostImage = new Image
             {
                 Width = _currentCellSize - 4,
                 Height = _currentCellSize - 4,
-                Fill = new SolidColorBrush(Colors.Red),
-                RadiusX = 8,
-                RadiusY = 8
+                Stretch = Stretch.Uniform
             };
-            GameCanvas.Children.Add(ghostShape);
-            _ghostVisuals[ghost] = ghostShape;
-            UpdateEntityPosition(ghostShape, ghost);
+            var state = CreateGhostSpriteState(ghostImage, baseName, ghost);
+            ghostImage.Source = state.Left.GetFrameImage();
+            GameCanvas.Children.Add(ghostImage);
+            _ghostSprites[ghost] = state;
+            UpdateEntityPosition(ghostImage, ghost);
         }
     }
 
@@ -270,15 +314,18 @@ public sealed partial class GamePage : UserControl
             UpdatePelletsVisual(playerX, playerY);
         }
 
-        UpdateEntityPosition(_playerVisual, vm.Player);
+        UpdateEntityPosition(_playerImage, vm.Player);
 
         foreach (var ghost in vm.Ghosts)
         {
-            if (_ghostVisuals.ContainsKey(ghost))
+            if (_ghostSprites.TryGetValue(ghost, out var state))
             {
-                UpdateEntityPosition(_ghostVisuals[ghost], ghost);
+                UpdateEntityPosition(state.Image, ghost);
+                UpdateGhostSprite(state, ghost);
             }
         }
+
+        UpdatePlayerSprite();
 
         if (vm.IsWin)
         {
@@ -304,9 +351,113 @@ public sealed partial class GamePage : UserControl
         }
     }
 
+    private void InitializePlayerAnimations()
+    {
+        _playerUp = new SpriteAnimation("sprites/32x32/pacman/pacman_cima", 2, 1);
+        _playerDown = new SpriteAnimation("sprites/32x32/pacman/pacman_baixo", 2, 1);
+        _playerLeft = new SpriteAnimation("sprites/32x32/pacman/pacman_esquerda", 2, 1);
+        _playerRight = new SpriteAnimation("sprites/32x32/pacman/pacman_direita", 2, 1);
+    }
+
+    private SpriteAnimation GetPlayerAnimation(Direction direction)
+    {
+        return direction switch
+        {
+            Direction.Up => _playerUp,
+            Direction.Down => _playerDown,
+            Direction.Left => _playerLeft,
+            _ => _playerRight
+        };
+    }
+
+    private void UpdatePlayerSprite()
+    {
+        if (_playerImage == null || _playerAnim == null)
+        {
+            return;
+        }
+
+        if (_playerAnim.Update())
+        {
+            _playerImage.Source = _playerAnim.GetFrameImage();
+        }
+    }
+
+    private GhostSpriteState CreateGhostSpriteState(Image image, string baseName, Ghost ghost)
+    {
+        var up = new SpriteAnimation($"sprites/32x32/ghosts/{baseName}_cima", 2, 2);
+        var down = new SpriteAnimation($"sprites/32x32/ghosts/{baseName}_baixo", 2, 2);
+        var left = new SpriteAnimation($"sprites/32x32/ghosts/{baseName}_esquerda", 2, 2);
+        var right = new SpriteAnimation($"sprites/32x32/ghosts/{baseName}_direita", 2, 2);
+
+        return new GhostSpriteState
+        {
+            Image = image,
+            Up = up,
+            Down = down,
+            Left = left,
+            Right = right,
+            LastX = ghost.X,
+            LastY = ghost.Y,
+            CurrentDirection = Direction.Left
+        };
+    }
+
+    private void UpdateGhostSprite(GhostSpriteState state, Ghost ghost)
+    {
+        var dx = ghost.X - state.LastX;
+        var dy = ghost.Y - state.LastY;
+
+        if (dx == 0 && dy == 0)
+        {
+            return;
+        }
+
+        var previousDirection = state.CurrentDirection;
+
+        if (dx > 0)
+        {
+            state.CurrentDirection = Direction.Right;
+        }
+        else if (dx < 0)
+        {
+            state.CurrentDirection = Direction.Left;
+        }
+        else if (dy > 0)
+        {
+            state.CurrentDirection = Direction.Down;
+        }
+        else if (dy < 0)
+        {
+            state.CurrentDirection = Direction.Up;
+        }
+
+        var anim = state.CurrentDirection switch
+        {
+            Direction.Up => state.Up,
+            Direction.Down => state.Down,
+            Direction.Left => state.Left,
+            _ => state.Right
+        };
+
+        if (previousDirection != state.CurrentDirection)
+        {
+            anim.Reset();
+            state.Image.Source = anim.GetFrameImage();
+        }
+        else if (anim.Update())
+        {
+            state.Image.Source = anim.GetFrameImage();
+        }
+
+        state.LastX = ghost.X;
+        state.LastY = ghost.Y;
+    }
+
     private void Restart_Click(object sender, RoutedEventArgs e)
     {
         ViewModel.RestartGame();
+        _playerDirection = Direction.Right;
         DrawMap();
         _currentDirection = null;
         _winSequenceStarted = false;
@@ -317,6 +468,7 @@ public sealed partial class GamePage : UserControl
     private void Menu_Click(object sender, RoutedEventArgs e)
     {
         ViewModel.ResetForMenu();
+        _playerDirection = Direction.Right;
         _currentDirection = null;
         _winSequenceStarted = false;
         StopWinTimer();

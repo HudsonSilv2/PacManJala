@@ -47,7 +47,7 @@
                   Grid.Column="0"
                   SizeChanged="GameContainer_SizeChanged">
                 <Canvas x:Name="GameCanvas"
-                        Background="#1a1a1a"
+                        Background="#000000"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"/>
 

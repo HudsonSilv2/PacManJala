@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text.Json;
 using PacMan.Core.Models;
 using Windows.Storage;
+using System;
 
 namespace PacMan.App.Services;
 
 public class HighScoreService
 {
     private const string FileName = "highscores.json";
-    private const string ResetFlagKey = "HighScoresResetKeepPacMan_v1";
+    private const string ResetFlagKey = "HighScoresResetAll_v1";
     private readonly string _filePath;
 
     public HighScoreService()
@@ -35,7 +36,7 @@ public class HighScoreService
         return JsonSerializer.Deserialize<List<ScoreEntry>>(json) ?? new List<ScoreEntry>();
     }
 
-    public void ResetKeepPacManOnce()
+    public void ResetAllOnce()
     {
         var settings = ApplicationData.Current.LocalSettings;
         if (settings.Values.ContainsKey(ResetFlagKey))
@@ -43,17 +44,7 @@ public class HighScoreService
             return;
         }
 
-        var scores = Load();
-        var filtered = scores
-            .Where(s => string.Equals(s.PlayerName, "PAC MAN", StringComparison.OrdinalIgnoreCase))
-            .ToList();
-
-        if (filtered.Count == 0)
-        {
-            filtered.Add(new ScoreEntry { PlayerName = "PAC MAN", Score = 5000 });
-        }
-
-        Save(filtered);
+        Save(new List<ScoreEntry>());
         settings.Values[ResetFlagKey] = true;
     }
 

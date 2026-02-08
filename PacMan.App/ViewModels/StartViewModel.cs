@@ -19,7 +19,7 @@ public class StartViewModel : INotifyPropertyChanged
     {
         _highScoreService = new HighScoreService();
         ToggleMuteCommand = new RelayCommand(_ => ToggleMute());
-        _highScoreService.ResetKeepPacManOnce();
+        _highScoreService.ResetAllOnce();
         LoadHighScores();
         IsMuted = AudioService.Instance.IsMuted;
     }

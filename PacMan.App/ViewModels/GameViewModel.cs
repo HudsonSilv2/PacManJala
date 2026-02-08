@@ -58,9 +58,11 @@ public class GameViewModel : INotifyPropertyChanged
     private bool _isPaused;
     private bool _isGameOver;
     private bool _isWin;
+    private int _ghostMoveTick;
 
     private const int DefaultMapWidth = 28;
     private const int DefaultMapHeight = 29;
+    private const int GhostMoveEveryTicks = 3;
 
     public Player Player => _engine.Player;
     public IEnumerable<Ghost> Ghosts => _engine.Ghosts;
@@ -81,6 +83,7 @@ public class GameViewModel : INotifyPropertyChanged
     {
         _engine = new GameEngine(DefaultMapWidth, DefaultMapHeight);
         InitializeCollections();
+        _ghostMoveTick = 0;
 
         LoadHighScores();
 
@@ -167,6 +170,7 @@ public class GameViewModel : INotifyPropertyChanged
     {
         _engine = new GameEngine(DefaultMapWidth, DefaultMapHeight);
         InitializeCollections();
+        _ghostMoveTick = 0;
         IsGameOver = false;
         IsWin = false;
         IsPaused = false;
@@ -181,6 +185,7 @@ public class GameViewModel : INotifyPropertyChanged
     {
         _engine = new GameEngine(DefaultMapWidth, DefaultMapHeight);
         InitializeCollections();
+        _ghostMoveTick = 0;
         IsGameOver = false;
         IsWin = false;
         IsPaused = false;
@@ -199,7 +204,11 @@ public class GameViewModel : INotifyPropertyChanged
         var pelletsBefore = _engine.PelletsRemaining;
 
         _engine.MovePlayer(direction);
-        _engine.MoveGhosts();
+        _ghostMoveTick++;
+        if (_ghostMoveTick % GhostMoveEveryTicks == 0)
+        {
+            _engine.MoveGhosts();
+        }
 
         // Notifica que o Score mudou para atualizar o TextBlock na tela
         OnPropertyChanged(nameof(CurrentScore));
@@ -269,6 +278,7 @@ public class GameViewModel : INotifyPropertyChanged
         _engine.Player.Score = score;
 
         InitializeCollections();
+        _ghostMoveTick = 0;
         IsWin = false;
         IsPaused = false;
         IsGameStarted = true;

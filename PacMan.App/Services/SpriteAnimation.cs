@@ -10,7 +10,7 @@ namespace PacMan.App.Services;
 /// </summary>
 public sealed class SpriteAnimation
 {
-    private readonly List<string> _frames;
+    private readonly List<BitmapImage> _frames;
     private int _index;
     private int _timer;
     private readonly int _ticksPerFrame;
@@ -38,35 +38,41 @@ public sealed class SpriteAnimation
 
         if (frames > 1)
         {
-            _frames = new List<string>(frames);
+            _frames = new List<BitmapImage>(frames);
             for (int i = 0; i < frames; i++)
             {
-                _frames.Add($"ms-appx:///Assets/{basePath}{i}.png");
+                var uri = new Uri($"ms-appx:///Assets/{basePath}{i}.png");
+                _frames.Add(new BitmapImage(uri));
             }
         }
         else
         {
-            _frames = new List<string> { $"ms-appx:///Assets/{basePath}.png" };
+            var uri = new Uri($"ms-appx:///Assets/{basePath}.png");
+            _frames = new List<BitmapImage> { new BitmapImage(uri) };
         }
     }
 
-    public void Update()
+    public bool Update()
     {
         _timer++;
         if (_timer >= _ticksPerFrame)
         {
             _timer = 0;
             _index = (_index + 1) % _frames.Count;
+            return true;
         }
+
+        return false;
     }
 
-    public Uri GetFrameUri()
+    public void Reset()
     {
-        return new Uri(_frames[_index]);
+        _index = 0;
+        _timer = 0;
     }
 
     public BitmapImage GetFrameImage()
     {
-        return new BitmapImage(GetFrameUri());
+        return _frames[_index];
     }
 }
