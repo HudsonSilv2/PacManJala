@@ -1,6 +1,7 @@
 using PacMan.Core.Enums;
 using PacMan.Core.Models;
 using PacMan.Core.Services;
+using System.Linq;
 
 namespace PacMan.Core;
 
@@ -14,13 +15,16 @@ public class GameEngine
     public Player Player { get; }
     public List<Ghost> Ghosts { get; }
     private readonly Position _playerSpawn;
+    private const int PoweredUpDurationTicks = 50;
     public int PelletsRemaining { get; private set; }
     public bool IsPlayerPoweredUp { get; private set; }
+    public int PoweredUpTicksRemaining { get; private set; }
 
     public int LivesRemaining { get; private set; } = 3;
     public bool IsGameOver => LivesRemaining <= 0;
 
     private bool _playerDiedThisTurn;
+    private bool _ghostEatenThisTurn;
 
     public GameEngine(int width, int height)
     {
@@ -49,7 +53,9 @@ public class GameEngine
             Ghosts.Add(new Ghost
             {
                 X = pos.X,
-                Y = pos.Y
+                Y = pos.Y,
+                SpawnX = pos.X,
+                SpawnY = pos.Y
             });
         }
     }
@@ -81,6 +87,17 @@ public class GameEngine
         if (_playerDiedThisTurn)
         {
             _playerDiedThisTurn = false;
+            return true;
+        }
+
+        return false;
+    }
+
+    public bool ConsumeGhostEaten()
+    {
+        if (_ghostEatenThisTurn)
+        {
+            _ghostEatenThisTurn = false;
             return true;
         }
 
@@ -119,26 +136,50 @@ public class GameEngine
                     if (currentTile == TileType.PowerPellet)
                     {
                         IsPlayerPoweredUp = true;
+                        PoweredUpTicksRemaining = PoweredUpDurationTicks;
                     }
                 }
             }
         }
 
         CheckCollisions();
+
+        if (entity is Player)
+        {
+            TickPowerUp();
+        }
     }
 
     private void CheckCollisions()
     {
-        if (Ghosts.Any(g => g.X == Player.X && g.Y == Player.Y))
+        var collidedGhosts = Ghosts.Where(g => g.X == Player.X && g.Y == Player.Y).ToList();
+        if (collidedGhosts.Count == 0)
         {
-            if (LivesRemaining > 0)
+            return;
+        }
+
+        if (IsPlayerPoweredUp)
+        {
+            foreach (var ghost in collidedGhosts)
             {
-                LivesRemaining--;
+                Player.Score += 200;
+                ghost.X = ghost.SpawnX;
+                ghost.Y = ghost.SpawnY;
             }
 
-            _playerDiedThisTurn = true;
-            InitializePlayerPosition();
+            _ghostEatenThisTurn = true;
+            return;
         }
+
+        if (LivesRemaining > 0)
+        {
+            LivesRemaining--;
+        }
+
+        IsPlayerPoweredUp = false;
+        PoweredUpTicksRemaining = 0;
+        _playerDiedThisTurn = true;
+        InitializePlayerPosition();
     }
 
     private bool CanMoveTo(int x, int y)
@@ -155,6 +196,21 @@ public class GameEngine
     {
         Player.X = _playerSpawn.X;
         Player.Y = _playerSpawn.Y;
+    }
+
+    private void TickPowerUp()
+    {
+        if (!IsPlayerPoweredUp)
+        {
+            return;
+        }
+
+        PoweredUpTicksRemaining--;
+        if (PoweredUpTicksRemaining <= 0)
+        {
+            PoweredUpTicksRemaining = 0;
+            IsPlayerPoweredUp = false;
+        }
     }
 
     private int CountPellets()

@@ -27,9 +27,11 @@ public sealed partial class GamePage : UserControl
         public SpriteAnimation Down { get; init; }
         public SpriteAnimation Left { get; init; }
         public SpriteAnimation Right { get; init; }
+        public SpriteAnimation Vulnerable { get; init; }
         public Direction CurrentDirection { get; set; } = Direction.Left;
         public int LastX { get; set; }
         public int LastY { get; set; }
+        public bool WasVulnerable { get; set; }
     }
 
     // Referências visuais do pacman
@@ -389,6 +391,7 @@ public sealed partial class GamePage : UserControl
         var down = new SpriteAnimation($"sprites/32x32/ghosts/{baseName}_baixo", 2, 2);
         var left = new SpriteAnimation($"sprites/32x32/ghosts/{baseName}_esquerda", 2, 2);
         var right = new SpriteAnimation($"sprites/32x32/ghosts/{baseName}_direita", 2, 2);
+        var vulnerable = new SpriteAnimation("sprites/32x32/ghosts/fantasmainvuneravel", 4, 2);
 
         return new GhostSpriteState
         {
@@ -397,6 +400,7 @@ public sealed partial class GamePage : UserControl
             Down = down,
             Left = left,
             Right = right,
+            Vulnerable = vulnerable,
             LastX = ghost.X,
             LastY = ghost.Y,
             CurrentDirection = Direction.Left
@@ -405,6 +409,39 @@ public sealed partial class GamePage : UserControl
 
     private void UpdateGhostSprite(GhostSpriteState state, Ghost ghost)
     {
+        var isVulnerable = ViewModel.IsPlayerPoweredUp;
+        if (isVulnerable)
+        {
+            if (!state.WasVulnerable)
+            {
+                state.Vulnerable.Reset();
+                state.Image.Source = state.Vulnerable.GetFrameImage();
+            }
+            else if (state.Vulnerable.Update())
+            {
+                state.Image.Source = state.Vulnerable.GetFrameImage();
+            }
+
+            state.WasVulnerable = true;
+            state.LastX = ghost.X;
+            state.LastY = ghost.Y;
+            return;
+        }
+
+        if (state.WasVulnerable)
+        {
+            var resetAnim = state.CurrentDirection switch
+            {
+                Direction.Up => state.Up,
+                Direction.Down => state.Down,
+                Direction.Left => state.Left,
+                _ => state.Right
+            };
+            resetAnim.Reset();
+            state.Image.Source = resetAnim.GetFrameImage();
+            state.WasVulnerable = false;
+        }
+
         var dx = ghost.X - state.LastX;
         var dy = ghost.Y - state.LastY;
 

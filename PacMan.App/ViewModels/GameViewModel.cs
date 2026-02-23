@@ -70,6 +70,7 @@ public class GameViewModel : INotifyPropertyChanged
 
     public int MapWidth => _engine.Map.Width;
     public int MapHeight => _engine.Map.Height;
+    public bool IsPlayerPoweredUp => _engine.IsPlayerPoweredUp;
 
     public ObservableCollection<Tile> Tiles { get; } = new();
     public ObservableCollection<Entity> GameObjects { get; } = new();
@@ -212,6 +213,7 @@ public class GameViewModel : INotifyPropertyChanged
 
         // Notifica que o Score mudou para atualizar o TextBlock na tela
         OnPropertyChanged(nameof(CurrentScore));
+        OnPropertyChanged(nameof(IsPlayerPoweredUp));
 
         var scoreDelta = CurrentScore - scoreBefore;
         if (_engine.PelletsRemaining < pelletsBefore)
@@ -236,6 +238,11 @@ public class GameViewModel : INotifyPropertyChanged
                 _audioService.PlayGameOver();
                 SaveScore();
             }
+        }
+
+        if (_engine.ConsumeGhostEaten())
+        {
+            _audioService.PlayEatGhost();
         }
 
         if (_engine.PelletsRemaining <= 0 && !IsGameOver)
